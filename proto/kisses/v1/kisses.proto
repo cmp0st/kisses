@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package kisses.v1;
+
+option go_package = "github.com/cmp0st/kisses/server/gen/kisses/v1;kissesv1";
+
+message PingRequest {}
+
+message PingResponse {
+  string msg = 1;
+}
+
+service KissesService {
+  rpc Ping(PingRequest) returns (PingResponse) {}
+}
