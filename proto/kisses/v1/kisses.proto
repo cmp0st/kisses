@@ -4,12 +4,28 @@ package kisses.v1;
 
 option go_package = "github.com/cmp0st/kisses/server/gen/kisses/v1;kissesv1";
 
-message PingRequest {}
+message Kiss {
+  string message = 1;
+}
 
-message PingResponse {
-  string msg = 1;
+message PostKissRequest {
+  string from = 1;
+  string to = 2;
+  Kiss kiss = 3;
+}
+
+message PostKissResponse {}
+
+message GetKissesRequest {
+  string to = 1;
+}
+
+message GetKissesResponse {
+  repeated string from = 1;
+  repeated Kiss kisses = 2;
 }
 
 service KissesService {
-  rpc Ping(PingRequest) returns (PingResponse) {}
+  rpc PostKiss(PostKissRequest) returns (PostKissResponse) {}
+  rpc GetKisses(GetKissesRequest) returns (GetKissesResponse) {}
 }

@@ -21,18 +21,21 @@ import 'kisses.pbjson.dart';
 export 'kisses.pb.dart';
 
 abstract class KissesServiceBase extends $pb.GeneratedService {
-  $async.Future<$0.PingResponse> ping($pb.ServerContext ctx, $0.PingRequest request);
+  $async.Future<$0.PostKissResponse> postKiss($pb.ServerContext ctx, $0.PostKissRequest request);
+  $async.Future<$0.GetKissesResponse> getKisses($pb.ServerContext ctx, $0.GetKissesRequest request);
 
   $pb.GeneratedMessage createRequest($core.String methodName) {
     switch (methodName) {
-      case 'Ping': return $0.PingRequest();
+      case 'PostKiss': return $0.PostKissRequest();
+      case 'GetKisses': return $0.GetKissesRequest();
       default: throw $core.ArgumentError('Unknown method: $methodName');
     }
   }
 
   $async.Future<$pb.GeneratedMessage> handleCall($pb.ServerContext ctx, $core.String methodName, $pb.GeneratedMessage request) {
     switch (methodName) {
-      case 'Ping': return this.ping(ctx, request as $0.PingRequest);
+      case 'PostKiss': return this.postKiss(ctx, request as $0.PostKissRequest);
+      case 'GetKisses': return this.getKisses(ctx, request as $0.GetKissesRequest);
       default: throw $core.ArgumentError('Unknown method: $methodName');
     }
   }

@@ -20,14 +20,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PingRequest struct {
+type Kiss struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 }
 
-func (x *PingRequest) Reset() {
-	*x = PingRequest{}
+func (x *Kiss) Reset() {
+	*x = Kiss{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_kisses_v1_kisses_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -35,13 +37,13 @@ func (x *PingRequest) Reset() {
 	}
 }
 
-func (x *PingRequest) String() string {
+func (x *Kiss) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PingRequest) ProtoMessage() {}
+func (*Kiss) ProtoMessage() {}
 
-func (x *PingRequest) ProtoReflect() protoreflect.Message {
+func (x *Kiss) ProtoReflect() protoreflect.Message {
 	mi := &file_kisses_v1_kisses_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -53,21 +55,30 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
-func (*PingRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use Kiss.ProtoReflect.Descriptor instead.
+func (*Kiss) Descriptor() ([]byte, []int) {
 	return file_kisses_v1_kisses_proto_rawDescGZIP(), []int{0}
 }
 
-type PingResponse struct {
+func (x *Kiss) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type PostKissRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Msg string `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	Kiss *Kiss  `protobuf:"bytes,3,opt,name=kiss,proto3" json:"kiss,omitempty"`
 }
 
-func (x *PingResponse) Reset() {
-	*x = PingResponse{}
+func (x *PostKissRequest) Reset() {
+	*x = PostKissRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_kisses_v1_kisses_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,13 +86,13 @@ func (x *PingResponse) Reset() {
 	}
 }
 
-func (x *PingResponse) String() string {
+func (x *PostKissRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PingResponse) ProtoMessage() {}
+func (*PostKissRequest) ProtoMessage() {}
 
-func (x *PingResponse) ProtoReflect() protoreflect.Message {
+func (x *PostKissRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_kisses_v1_kisses_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,16 +104,170 @@ func (x *PingResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
-func (*PingResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use PostKissRequest.ProtoReflect.Descriptor instead.
+func (*PostKissRequest) Descriptor() ([]byte, []int) {
 	return file_kisses_v1_kisses_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *PingResponse) GetMsg() string {
+func (x *PostKissRequest) GetFrom() string {
 	if x != nil {
-		return x.Msg
+		return x.From
 	}
 	return ""
+}
+
+func (x *PostKissRequest) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
+func (x *PostKissRequest) GetKiss() *Kiss {
+	if x != nil {
+		return x.Kiss
+	}
+	return nil
+}
+
+type PostKissResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *PostKissResponse) Reset() {
+	*x = PostKissResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kisses_v1_kisses_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PostKissResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PostKissResponse) ProtoMessage() {}
+
+func (x *PostKissResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_kisses_v1_kisses_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PostKissResponse.ProtoReflect.Descriptor instead.
+func (*PostKissResponse) Descriptor() ([]byte, []int) {
+	return file_kisses_v1_kisses_proto_rawDescGZIP(), []int{2}
+}
+
+type GetKissesRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	To string `protobuf:"bytes,1,opt,name=to,proto3" json:"to,omitempty"`
+}
+
+func (x *GetKissesRequest) Reset() {
+	*x = GetKissesRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kisses_v1_kisses_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetKissesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetKissesRequest) ProtoMessage() {}
+
+func (x *GetKissesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_kisses_v1_kisses_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetKissesRequest.ProtoReflect.Descriptor instead.
+func (*GetKissesRequest) Descriptor() ([]byte, []int) {
+	return file_kisses_v1_kisses_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetKissesRequest) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
+type GetKissesResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	From   []string `protobuf:"bytes,1,rep,name=from,proto3" json:"from,omitempty"`
+	Kisses []*Kiss  `protobuf:"bytes,2,rep,name=kisses,proto3" json:"kisses,omitempty"`
+}
+
+func (x *GetKissesResponse) Reset() {
+	*x = GetKissesResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kisses_v1_kisses_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetKissesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetKissesResponse) ProtoMessage() {}
+
+func (x *GetKissesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_kisses_v1_kisses_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetKissesResponse.ProtoReflect.Descriptor instead.
+func (*GetKissesResponse) Descriptor() ([]byte, []int) {
+	return file_kisses_v1_kisses_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetKissesResponse) GetFrom() []string {
+	if x != nil {
+		return x.From
+	}
+	return nil
+}
+
+func (x *GetKissesResponse) GetKisses() []*Kiss {
+	if x != nil {
+		return x.Kisses
+	}
+	return nil
 }
 
 var File_kisses_v1_kisses_proto protoreflect.FileDescriptor
@@ -110,19 +275,37 @@ var File_kisses_v1_kisses_proto protoreflect.FileDescriptor
 var file_kisses_v1_kisses_proto_rawDesc = []byte{
 	0x0a, 0x16, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2f, 0x76, 0x31, 0x2f, 0x6b, 0x69, 0x73, 0x73,
 	0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73,
-	0x2e, 0x76, 0x31, 0x22, 0x0d, 0x0a, 0x0b, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x22, 0x20, 0x0a, 0x0c, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x03, 0x6d, 0x73, 0x67, 0x32, 0x4a, 0x0a, 0x0d, 0x4b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x53, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x39, 0x0a, 0x04, 0x50, 0x69, 0x6e, 0x67, 0x12, 0x16, 0x2e,
-	0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2e, 0x76,
-	0x31, 0x2e, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x42, 0x38, 0x5a, 0x36, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63,
-	0x6d, 0x70, 0x30, 0x73, 0x74, 0x2f, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2f, 0x73, 0x65, 0x72,
-	0x76, 0x65, 0x72, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2f, 0x76,
-	0x31, 0x3b, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x2e, 0x76, 0x31, 0x22, 0x20, 0x0a, 0x04, 0x4b, 0x69, 0x73, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x5a, 0x0a, 0x0f, 0x50, 0x6f, 0x73, 0x74, 0x4b, 0x69, 0x73,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x0e, 0x0a, 0x02,
+	0x74, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x23, 0x0a, 0x04,
+	0x6b, 0x69, 0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6b, 0x69, 0x73,
+	0x73, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x4b, 0x69, 0x73, 0x73, 0x52, 0x04, 0x6b, 0x69, 0x73,
+	0x73, 0x22, 0x12, 0x0a, 0x10, 0x50, 0x6f, 0x73, 0x74, 0x4b, 0x69, 0x73, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x22, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x4b, 0x69, 0x73, 0x73,
+	0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x74, 0x6f, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x74, 0x6f, 0x22, 0x50, 0x0a, 0x11, 0x47, 0x65, 0x74,
+	0x4b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12,
+	0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x66, 0x72,
+	0x6f, 0x6d, 0x12, 0x27, 0x0a, 0x06, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x4b,
+	0x69, 0x73, 0x73, 0x52, 0x06, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x32, 0xa0, 0x01, 0x0a, 0x0d,
+	0x4b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x45, 0x0a,
+	0x08, 0x50, 0x6f, 0x73, 0x74, 0x4b, 0x69, 0x73, 0x73, 0x12, 0x1a, 0x2e, 0x6b, 0x69, 0x73, 0x73,
+	0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x4b, 0x69, 0x73, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2e, 0x76,
+	0x31, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x4b, 0x69, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x12, 0x48, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x4b, 0x69, 0x73, 0x73, 0x65,
+	0x73, 0x12, 0x1b, 0x2e, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65,
+	0x74, 0x4b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c,
+	0x2e, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x4b, 0x69,
+	0x73, 0x73, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x38,
+	0x5a, 0x36, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6d, 0x70,
+	0x30, 0x73, 0x74, 0x2f, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x65,
+	0x72, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x2f, 0x76, 0x31, 0x3b,
+	0x6b, 0x69, 0x73, 0x73, 0x65, 0x73, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -137,19 +320,26 @@ func file_kisses_v1_kisses_proto_rawDescGZIP() []byte {
 	return file_kisses_v1_kisses_proto_rawDescData
 }
 
-var file_kisses_v1_kisses_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_kisses_v1_kisses_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_kisses_v1_kisses_proto_goTypes = []interface{}{
-	(*PingRequest)(nil),  // 0: kisses.v1.PingRequest
-	(*PingResponse)(nil), // 1: kisses.v1.PingResponse
+	(*Kiss)(nil),              // 0: kisses.v1.Kiss
+	(*PostKissRequest)(nil),   // 1: kisses.v1.PostKissRequest
+	(*PostKissResponse)(nil),  // 2: kisses.v1.PostKissResponse
+	(*GetKissesRequest)(nil),  // 3: kisses.v1.GetKissesRequest
+	(*GetKissesResponse)(nil), // 4: kisses.v1.GetKissesResponse
 }
 var file_kisses_v1_kisses_proto_depIdxs = []int32{
-	0, // 0: kisses.v1.KissesService.Ping:input_type -> kisses.v1.PingRequest
-	1, // 1: kisses.v1.KissesService.Ping:output_type -> kisses.v1.PingResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: kisses.v1.PostKissRequest.kiss:type_name -> kisses.v1.Kiss
+	0, // 1: kisses.v1.GetKissesResponse.kisses:type_name -> kisses.v1.Kiss
+	1, // 2: kisses.v1.KissesService.PostKiss:input_type -> kisses.v1.PostKissRequest
+	3, // 3: kisses.v1.KissesService.GetKisses:input_type -> kisses.v1.GetKissesRequest
+	2, // 4: kisses.v1.KissesService.PostKiss:output_type -> kisses.v1.PostKissResponse
+	4, // 5: kisses.v1.KissesService.GetKisses:output_type -> kisses.v1.GetKissesResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_kisses_v1_kisses_proto_init() }
@@ -159,7 +349,7 @@ func file_kisses_v1_kisses_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_kisses_v1_kisses_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PingRequest); i {
+			switch v := v.(*Kiss); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -171,7 +361,43 @@ func file_kisses_v1_kisses_proto_init() {
 			}
 		}
 		file_kisses_v1_kisses_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PingResponse); i {
+			switch v := v.(*PostKissRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kisses_v1_kisses_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PostKissResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kisses_v1_kisses_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetKissesRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kisses_v1_kisses_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetKissesResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -189,7 +415,7 @@ func file_kisses_v1_kisses_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_kisses_v1_kisses_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

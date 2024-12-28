@@ -33,19 +33,23 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// KissesServicePingProcedure is the fully-qualified name of the KissesService's Ping RPC.
-	KissesServicePingProcedure = "/kisses.v1.KissesService/Ping"
+	// KissesServicePostKissProcedure is the fully-qualified name of the KissesService's PostKiss RPC.
+	KissesServicePostKissProcedure = "/kisses.v1.KissesService/PostKiss"
+	// KissesServiceGetKissesProcedure is the fully-qualified name of the KissesService's GetKisses RPC.
+	KissesServiceGetKissesProcedure = "/kisses.v1.KissesService/GetKisses"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	kissesServiceServiceDescriptor    = v1.File_kisses_v1_kisses_proto.Services().ByName("KissesService")
-	kissesServicePingMethodDescriptor = kissesServiceServiceDescriptor.Methods().ByName("Ping")
+	kissesServiceServiceDescriptor         = v1.File_kisses_v1_kisses_proto.Services().ByName("KissesService")
+	kissesServicePostKissMethodDescriptor  = kissesServiceServiceDescriptor.Methods().ByName("PostKiss")
+	kissesServiceGetKissesMethodDescriptor = kissesServiceServiceDescriptor.Methods().ByName("GetKisses")
 )
 
 // KissesServiceClient is a client for the kisses.v1.KissesService service.
 type KissesServiceClient interface {
-	Ping(context.Context, *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error)
+	PostKiss(context.Context, *connect.Request[v1.PostKissRequest]) (*connect.Response[v1.PostKissResponse], error)
+	GetKisses(context.Context, *connect.Request[v1.GetKissesRequest]) (*connect.Response[v1.GetKissesResponse], error)
 }
 
 // NewKissesServiceClient constructs a client for the kisses.v1.KissesService service. By default,
@@ -58,10 +62,16 @@ type KissesServiceClient interface {
 func NewKissesServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) KissesServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &kissesServiceClient{
-		ping: connect.NewClient[v1.PingRequest, v1.PingResponse](
+		postKiss: connect.NewClient[v1.PostKissRequest, v1.PostKissResponse](
 			httpClient,
-			baseURL+KissesServicePingProcedure,
-			connect.WithSchema(kissesServicePingMethodDescriptor),
+			baseURL+KissesServicePostKissProcedure,
+			connect.WithSchema(kissesServicePostKissMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getKisses: connect.NewClient[v1.GetKissesRequest, v1.GetKissesResponse](
+			httpClient,
+			baseURL+KissesServiceGetKissesProcedure,
+			connect.WithSchema(kissesServiceGetKissesMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -69,17 +79,24 @@ func NewKissesServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 
 // kissesServiceClient implements KissesServiceClient.
 type kissesServiceClient struct {
-	ping *connect.Client[v1.PingRequest, v1.PingResponse]
+	postKiss  *connect.Client[v1.PostKissRequest, v1.PostKissResponse]
+	getKisses *connect.Client[v1.GetKissesRequest, v1.GetKissesResponse]
 }
 
-// Ping calls kisses.v1.KissesService.Ping.
-func (c *kissesServiceClient) Ping(ctx context.Context, req *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error) {
-	return c.ping.CallUnary(ctx, req)
+// PostKiss calls kisses.v1.KissesService.PostKiss.
+func (c *kissesServiceClient) PostKiss(ctx context.Context, req *connect.Request[v1.PostKissRequest]) (*connect.Response[v1.PostKissResponse], error) {
+	return c.postKiss.CallUnary(ctx, req)
+}
+
+// GetKisses calls kisses.v1.KissesService.GetKisses.
+func (c *kissesServiceClient) GetKisses(ctx context.Context, req *connect.Request[v1.GetKissesRequest]) (*connect.Response[v1.GetKissesResponse], error) {
+	return c.getKisses.CallUnary(ctx, req)
 }
 
 // KissesServiceHandler is an implementation of the kisses.v1.KissesService service.
 type KissesServiceHandler interface {
-	Ping(context.Context, *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error)
+	PostKiss(context.Context, *connect.Request[v1.PostKissRequest]) (*connect.Response[v1.PostKissResponse], error)
+	GetKisses(context.Context, *connect.Request[v1.GetKissesRequest]) (*connect.Response[v1.GetKissesResponse], error)
 }
 
 // NewKissesServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -88,16 +105,24 @@ type KissesServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewKissesServiceHandler(svc KissesServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	kissesServicePingHandler := connect.NewUnaryHandler(
-		KissesServicePingProcedure,
-		svc.Ping,
-		connect.WithSchema(kissesServicePingMethodDescriptor),
+	kissesServicePostKissHandler := connect.NewUnaryHandler(
+		KissesServicePostKissProcedure,
+		svc.PostKiss,
+		connect.WithSchema(kissesServicePostKissMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	kissesServiceGetKissesHandler := connect.NewUnaryHandler(
+		KissesServiceGetKissesProcedure,
+		svc.GetKisses,
+		connect.WithSchema(kissesServiceGetKissesMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/kisses.v1.KissesService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case KissesServicePingProcedure:
-			kissesServicePingHandler.ServeHTTP(w, r)
+		case KissesServicePostKissProcedure:
+			kissesServicePostKissHandler.ServeHTTP(w, r)
+		case KissesServiceGetKissesProcedure:
+			kissesServiceGetKissesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -107,6 +132,10 @@ func NewKissesServiceHandler(svc KissesServiceHandler, opts ...connect.HandlerOp
 // UnimplementedKissesServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedKissesServiceHandler struct{}
 
-func (UnimplementedKissesServiceHandler) Ping(context.Context, *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("kisses.v1.KissesService.Ping is not implemented"))
+func (UnimplementedKissesServiceHandler) PostKiss(context.Context, *connect.Request[v1.PostKissRequest]) (*connect.Response[v1.PostKissResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("kisses.v1.KissesService.PostKiss is not implemented"))
+}
+
+func (UnimplementedKissesServiceHandler) GetKisses(context.Context, *connect.Request[v1.GetKissesRequest]) (*connect.Response[v1.GetKissesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("kisses.v1.KissesService.GetKisses is not implemented"))
 }
