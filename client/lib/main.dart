@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart'; 
+import 'package:qr_flutter/qr_flutter.dart'; 
 import 'package:connectrpc/http2.dart';
 import 'package:connectrpc/connect.dart';
 import 'package:connectrpc/protobuf.dart';
@@ -7,58 +9,32 @@ import './gen/kisses/v1/kisses.connect.client.dart';
 import './gen/kisses/v1/kisses.pb.dart';
 
 final transport = protocol.Transport(
+  // TODO(cmp0st): wire this up into build system instead of hard coding?
   baseUrl: "https://kisses-200953226135.us-west1.run.app",
-  codec: const ProtoCodec(),
+  codec: const JsonCodec(),
   httpClient: createHttpClient(),
 );
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const Kisses());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Kisses extends StatelessWidget {
+  const Kisses({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Kisses',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.pink,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page', transport: transport),
+      home: MyHomePage(title: 'Kisses', transport: transport),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.transport});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
   final Transport transport;
@@ -68,49 +44,130 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String msg = "";
-
-  void _ping() async {
-    final response = await KissesServiceClient(widget.transport).ping(
-      PingRequest(),
-    );
+  List<String> friends = ["foo", "bar", "baz"];
+  String? myId;
+  bool isScanning = false;
+  
+  Future<void> _scanQR() async {
     setState(() {
-      msg = response.msg;
+      isScanning = true; 
     });
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: SizedBox(
+            height: 300,
+            child: MobileScanner(
+              fit: BoxFit.cover,
+              onDetect: (barcodeCapture) {
+                if (barcodeCapture.raw != null) {
+                  setState(() {
+                    friends.add(barcodeCapture.raw!.toString());
+                    isScanning = false; 
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+  
+  Future<void> _generateMyQR() async {
+    // Generate a unique ID (you can replace this with a more robust method)
+    myId ??= DateTime.now().millisecondsSinceEpoch.toString(); 
+
+    // Display QR code dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox( 
+            width: 200, // Set a fixed width for the QR code
+            height: 200, // Set a fixed height for the QR code
+            child: QrImageView(
+              data: myId!,
+              version: QrVersions.auto,
+              size: 200,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _pingFriend(String friendId) async {
+    try {
+      final response = await KissesServiceClient(widget.transport).ping(
+        PingRequest(),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Kiss ping response ${response.msg}'),
+        ),
+      );
+    } catch (e) {
+      // Handle network error
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Network error occurred.'),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Ping response:',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _scanQR,
+                  child: Text('Scan QR Code'),
+                ),
+                ElevatedButton(
+                  onPressed: _generateMyQR,
+                  child: Text('Show My QR Code'),
+                ),
+              ],
             ),
-            Text(
-              msg,
-              style: Theme.of(context).textTheme.headlineMedium,
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: friends.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(friends[index]),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.favorite),
+                      onPressed: () => _pingFriend(friends[index]),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _ping,
-        tooltip: 'Ping',
-        child: const Icon(Icons.dialpad),
-      ), 
     );
   }
 }
